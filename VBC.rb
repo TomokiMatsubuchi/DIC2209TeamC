@@ -21,7 +21,6 @@ class VendingMachine
     return if @cash.insert_money == false
     @slot_money = @cash.slot_money
     while true
-
       if stock_list == []
         puts "品切れ中です"
         return
@@ -48,7 +47,9 @@ class VendingMachine
 end  
   
 class Products 
+
   attr_accessor :drinks
+
   def initialize
     @drinks = { cola: {price: 120, stock: 5} }
   end
@@ -80,13 +81,10 @@ class Cash
       else  
         @slot_money += money
       end
-      
       return if LoopMaster.boolean_loop("お金を投入") == false
-      
     end        
   end
   
-
   def return_money(money)
     puts "おつりは#{money}円です"
     @slot_money = 0
@@ -108,7 +106,6 @@ module LoopMaster
       end
     end
   end
-  
 end  
 
 class StartUp
