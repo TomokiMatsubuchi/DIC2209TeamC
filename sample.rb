@@ -50,15 +50,14 @@ class Products
   end
 
   def new_drinks
-    @drinks[:redbull] = { price: 200, stock: 5 }
-    @drinks[:water] = { price: 100, stock: 5 }
+    @drinks[:redbull] = {price: 200, stock: 5}
+    @drinks[:water] = {price: 100, stock: 5}
   end
 end
 
-class Cash
+class Cash 
   attr_accessor :sales_amount, :slot_money
   MONEY = [10, 50, 100, 500, 1000].freeze
-  include LoopMaster
   
   def initialize
     @sales_amount = 0
@@ -66,57 +65,23 @@ class Cash
   end
 
   def insert_money
-    while true
-      puts "------------------------------------------------------"
-      puts "10円玉、50円玉、100円玉、500円玉、1000円札から投入してください"
-      money = gets.to_i
-      unless MONEY.include?(money)
-        return_money(@slot_money + money)
-        money = 0
-        break
-        false
-      else  
-        @slot_money += money
-      end
-      puts "続けてお金を投入しますか？(y/n)"
-      
-      
-      # while true
-      # continue = gets.chomp
-      #   if continue == "y"
-      #     break 
-      #     true
-      #   elsif continue == "n"
-      #     return
-      #   else
-      #     puts "yかnで入力してください"
-      #   end
-    end        
+    puts "------------------------------------------------------"
+    puts "10円玉、50円玉、100円玉、500円玉、1000円札から投入してください"
+    money = gets.to_i
+    unless MONEY.include?(money)
+      return_money(money)
+      money = 0
+      false
+    else  
+      @slot_money += money
+    end  
   end
-  LoopMaster::boolean_loop
 
   def return_money(money)
     puts "おつりは#{money}円です"
     @slot_money = 0
   end
 end
-
-module LoopMaster
-  
-  def boolean_loop
-    while true
-      continue = gets.chomp
-      if continue == "y"
-        break 
-        true
-      elsif continue == "n"
-        return
-      else
-        puts "yかnで入力してください"
-      end
-    end
-  end  
-end  
 
 class StartUp
   def self.purchase
