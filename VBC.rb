@@ -20,25 +20,29 @@ class VendingMachine
   def buy_drink
     return if @cash.insert_money == false
     @slot_money = @cash.slot_money
-    
-    if stock_list == []
-      puts "品切れ中です"
-    else
-      puts "-----販売中----"
-      p stock_list
-      puts "---------------"
-      puts "欲しい商品番号を入力してください"
-      puts"左から０から２を入力してください"
-      drink = gets.to_i
-      drink_id = stock_list[drink]
-      price = @drinks[drink_id][:price]
-      stock = @drinks[drink_id][:stock]  
-      if buy?(price, stock)
-        stock = stock-1
-        @cash.sales_amount += price
-        @slot_money -= price
-        @cash.return_money(@slot_money)
+    while true
+
+      if stock_list == []
+        puts "品切れ中です"
+        return
+      else
+        puts "-----販売中----"
+        p stock_list
+        puts "---------------"
+        puts "欲しい商品番号を入力してください"
+        puts"左から1 ~ #{stock_list.length}を選んで入力してください"
+        drink = gets.to_i - 1
+        drink_id = stock_list[drink]
+        price = @drinks[drink_id][:price]
+        stock = @drinks[drink_id][:stock]  
+        if buy?(price, stock)
+          stock = stock-1
+          @cash.sales_amount += price
+          @slot_money -= price
+          @cash.return_money(@slot_money)
+        end
       end
+      return if LoopMaster.boolean_loop("商品を購入") == false
     end
   end
 end  
@@ -58,7 +62,6 @@ end
 class Cash
   attr_accessor :sales_amount, :slot_money
   MONEY = [10, 50, 100, 500, 1000].freeze
-  include LoopMaster
   
   def initialize
     @sales_amount = 0
@@ -73,27 +76,16 @@ class Cash
       unless MONEY.include?(money)
         return_money(@slot_money + money)
         money = 0
-        break
-        false
+        break false
       else  
         @slot_money += money
       end
-      puts "続けてお金を投入しますか？(y/n)"
       
+      return if LoopMaster.boolean_loop("お金を投入") == false
       
-      # while true
-      # continue = gets.chomp
-      #   if continue == "y"
-      #     break 
-      #     true
-      #   elsif continue == "n"
-      #     return
-      #   else
-      #     puts "yかnで入力してください"
-      #   end
     end        
   end
-  LoopMaster::boolean_loop
+  
 
   def return_money(money)
     puts "おつりは#{money}円です"
@@ -103,19 +95,20 @@ end
 
 module LoopMaster
   
-  def boolean_loop
+  def self.boolean_loop(comment)
     while true
+      puts "続けて#{comment}しますか？(y/n)"
       continue = gets.chomp
       if continue == "y"
-        break 
-        true
+        break true
       elsif continue == "n"
-        return
+        return false
       else
         puts "yかnで入力してください"
       end
     end
-  end  
+  end
+  
 end  
 
 class StartUp
