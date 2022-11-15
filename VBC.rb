@@ -48,15 +48,22 @@ class VendingMachine
         p stock_list
         puts "---------------"
         puts "欲しい商品番号を入力してください"
-        puts"左から1 ~ #{stock_list.length}を選んで入力してください"
-        drink = gets.to_i - 1
-        drink_id = stock_list[drink]
-        price = @drinks[drink_id][:price]
-        stock = @drinks[drink_id][:stock]  
-        if buy?(price, stock)
-          stock = stock-1
-          @cash.sales_amount += price
-          @slot_money -= price
+        while true
+          puts"左から1 ~ #{stock_list.length}を選んで入力してください"
+          drink = gets.to_i 
+          if drink > 0 && drink <= stock_list.length
+            drink_id = stock_list[drink - 1]
+            price = @drinks[drink_id][:price]
+            stock = @drinks[drink_id][:stock]  
+            if buy?(price, stock)
+              stock = stock-1
+              @cash.sales_amount += price
+              @slot_money -= price
+            end
+            break false
+          else
+            puts "#{drink}は使用できません。正しい数字を入力してください"
+          end
         end
       end
       puts "残金は#{@slot_money}円です。"
